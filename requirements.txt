@@ -1,0 +1,13 @@
+django==1.11.*
+dj-database-url==0.4.2
+gunicorn==19.7.1
+whitenoise==3.3.1
+psycopg2==2.7.3
+djangorestframework
+glob3
+joblib
+matplotlib
+Pillow
+pusher
+scikit-image
+scikit-learn
