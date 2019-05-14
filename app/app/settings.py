@@ -25,7 +25,7 @@ SECRET_KEY = '06f%ltbc!d&a9ht#ju1o+%y($tiph(yu^2!8!x3wgzb5zakd65'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['earweb.herokuapp.com']
 
 
 # Application definition
