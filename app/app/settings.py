@@ -25,7 +25,7 @@ SECRET_KEY = '06f%ltbc!d&a9ht#ju1o+%y($tiph(yu^2!8!x3wgzb5zakd65'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['earweb.herokuapp.com']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -76,8 +76,12 @@ WSGI_APPLICATION = 'app.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'db_telinga',
+        'USER': 'postgres',                      # Not used with sqlite3.
+        'PASSWORD': 'opang123',                  # Not used with sqlite3.
+        'HOST': 'localhost',                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '5432',
     }
 }
 

@@ -23,7 +23,7 @@ import urllib
 
 
 def process(path):
-    URL = 'https://earweb.herokuapp.com'+path
+    URL = 'http://127.0.0.1:8000'+path
     with urllib.request.urlopen(URL) as url:
         f = io.BytesIO(url.read())
     im=Image.open(f)

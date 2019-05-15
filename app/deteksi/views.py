@@ -18,79 +18,81 @@ def index(request):
   
 
     Files = File.objects.all().order_by('-id')[:1]
-    for a in Files:
-      path = a.file.url
-      print("=================================!!!!!!!!")
-      print(path)
-      BnC,imGray,h,s,v,feature,predicted_labels,proba = process(path)
- 
+    print(Files)
+    if Files !=[]:
+      for a in Files:
+        path = a.file.url
+        print("=================================!!!!!!!!")
+        print(path)
+        BnC,imGray,h,s,v,feature,predicted_labels,proba = process(path)
+  
+      citra=[]
+      img=[BnC,imGray]
+      for i in img:
+        plt.imshow(i, interpolation="bilinear", aspect='auto',cmap=plt.cm.gray)
+        plt.axis('off')
+        fig = plt.gcf()
+        buf = io.BytesIO()
+        fig.savefig(buf, format='png')
+        buf.seek(0)
+        string = base64.b64encode(buf.read())
+        uri = 'data:image/png;base64,' + urllib.parse.quote(string)
+        citra.append(uri)
 
-    citra=[]
-    img=[BnC,imGray]
-    for i in img:
-      
-      plt.imshow(i, interpolation="bilinear", aspect='auto',cmap=plt.cm.gray)
-      plt.axis('off')
-      fig = plt.gcf()
-      buf = io.BytesIO()
-      fig.savefig(buf, format='png')
-      buf.seek(0)
-      string = base64.b64encode(buf.read())
-      uri = 'data:image/png;base64,' + urllib.parse.quote(string)
-      citra.append(uri)
+      img2=[h,s,v]
+      for j in img2:
+        plt.imshow(j, interpolation="bilinear", aspect='auto')
+        plt.axis('off')
+        fig = plt.gcf()
+        buf = io.BytesIO()
+        fig.savefig(buf, format='png')
+        buf.seek(0)
+        string = base64.b64encode(buf.read())
+        uri = 'data:image/png;base64,' + urllib.parse.quote(string)
+        citra.append(uri)
 
-    img2=[h,s,v]
-    for j in img2:
-      plt.imshow(j, interpolation="bilinear", aspect='auto')
-      plt.axis('off')
-      fig = plt.gcf()
-      buf = io.BytesIO()
-      fig.savefig(buf, format='png')
-      buf.seek(0)
-      string = base64.b64encode(buf.read())
-      uri = 'data:image/png;base64,' + urllib.parse.quote(string)
-      citra.append(uri)
+      if predicted_labels[0]=='1':
+        result='Telinga Kotor'
+      else:
+        result='Telinga Bersih'
+      # Mencari nilai probabilitas
+      pro=str(proba)
+      split = pro.split(" ")
+      prob=[]
+      for i in split:
+          j=i.replace('[', '')
+          m=j.replace(']', '')
+          print(m)
+          prob.append(m)
+      b1=prob[0]
+      b2=float(b1)
+      bersih=str(round((b2*100),3))
+      # print('bersih=',bersih+'%')
 
-    if predicted_labels[0]=='1':
-      result='Telinga Kotor'
+      k1=prob[1]
+      k2=float(k1)
+      kotor=str(round((k2*100),3))
+      # print('kotor=',kotor+'%')
+
+      contex = {
+          'judul':'About Opang',
+          'penulis':'Iya Opang',
+          'imge':Files,
+          'citra1':citra[0],
+          'citra2':citra[1],
+          'citra3':citra[2],
+          'citra4':citra[3],
+          'citra5':citra[4],
+          'ciri':feature,
+          'hasil':result,
+          'probabilitas':[
+            ['Bersih',bersih],
+            ['Kotor',kotor]
+          ]
+      }
+      return render(request,'deteksi/index.html',contex)
     else:
-      result='Telinga Bersih'
-    # Mencari nilai probabilitas
-    pro=str(proba)
-    split = pro.split(" ")
-    prob=[]
-    for i in split:
-        j=i.replace('[', '')
-        m=j.replace(']', '')
-        print(m)
-        prob.append(m)
-    b1=prob[0]
-    b2=float(b1)
-    bersih=str(round((b2*100),3))
-    # print('bersih=',bersih+'%')
-
-    k1=prob[1]
-    k2=float(k1)
-    kotor=str(round((k2*100),3))
-    # print('kotor=',kotor+'%')
-
-    contex = {
-        'judul':'About Opang',
-        'penulis':'Iya Opang',
-        'imge':Files,
-        'citra1':citra[0],
-        'citra2':citra[1],
-        'citra3':citra[2],
-        'citra4':citra[3],
-        'citra5':citra[4],
-        'ciri':feature,
-        'hasil':result,
-        'probabilitas':[
-          ['Bersih',bersih],
-          ['Kotor',kotor]
-        ]
-    }
-    return render(request,'deteksi/index.html',contex)
+      return render(request,'deteksi/404.html')
 
 
 class FileView(APIView):
