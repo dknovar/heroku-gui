@@ -18,8 +18,9 @@ def index(request):
   
 
     Files = File.objects.all().order_by('-id')[:1]
-    print(Files)
-    if Files !=[]:
+    isi=len(Files)
+    print(isi)
+    if isi !=0:
       for a in Files:
         path = a.file.url
         print("=================================!!!!!!!!")
